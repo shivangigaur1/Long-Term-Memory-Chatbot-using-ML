@@ -1,0 +1,185 @@
+Flow Diagram for the Chatbot System
+
+                               +-----------------------------+
+                               |       User Input            |
+                               +-----------------------------+
+                                         |
+                                         v
+                          +-----------------------------+
+                          | Preprocess User Input       |
+                          +-----------------------------+
+                                         |
+       +---------------------------------+------------------------------------+
+       |                                                                      |
+       v                                                                      v
++----------------------------+                              +----------------------------+
+| Check for Predefined Input |                              |   Check for Exit Commands  |
++----------------------------+                              +----------------------------+
+       |                                                                      |
+       v                                                                      v
++----------------------------+                              +----------------------------+
+|  Return Predefined Response|                              |  Return Exit Message       |
++----------------------------+                              +----------------------------+
+       |
+       v
++----------------------------+
+| Match Against Dataset      |
++----------------------------+
+       |
+       v
++----------------------------+
+| Check Input Type:          |
+|  - Proper Question         |
+|  - Subset Question         |
+|  - Common Question         |
+|  - Vague Question          |
+|  - Incorrect/Unclear Query |
++----------------------------+
+       |
+       v
++--------------------------------+
+| Process Based on Input Type:   |
+|  - Random Forest (Proper Q.)   |
+|  - Subset Match (Subset Q.)    |
+|  - Recent Match (Common Q.)    |
+|  - ExtraTree (Vague Q.)        |
+|  - Default Response (Others)   |
++--------------------------------+
+       |
+       v
++-----------------------------+
+|     Generate Response       |
++-----------------------------+
+       |
+       v
++-----------------------------+
+|    Store Interaction in CSV |
++-----------------------------+
+       |
+       v
++-----------------------------+
+|        Response to User      |
++-----------------------------+
+
+
+
+
+
+ER Diagram for the Chatbot System
+
+
++------------------+            +-------------------+
+|      Users       |<---------> |    Conversations  |
++------------------+            +-------------------+
+| UserID (PK)      |            | ConversationID (PK)|
+| Name             |            | UserID (FK)       |
+| ContactDetails   |            | InputType         |
++------------------+            | Question          |
+                                | Answer            |
+                                | Timestamp         |
+                                +-------------------+
+                                         ^
+                                         |
+                                         v
+                                +-------------------+
+                                |   InputTypes      |
+                                +-------------------+
+                                | TypeID (PK)       |
+                                | TypeName          |
+                                +-------------------+
+
++------------------+            +-------------------+
+|   Questions      |<---------> |    ProcessedData  |
++------------------+            +-------------------+
+| QuestionID (PK)  |            | ProcessedID (PK)  |
+| Text             |            | QuestionID (FK)   |
+| TypeID (FK)      |            | Answer            |
+| Alternatives     |            | Alternatives      |
++------------------+            | ClassifierUsed    |
+                                +-------------------+
+Input Type 1: Predefined Responsess
+
+User Input -> Check PREDEFINED_RESPONSES -> Match Found -> Send Response -> Log Interaction
+                                                             |
+                                                             V
+                                                         No Match
+                                                             |
+                                                             V
+                                                Proceed to Next Input Type
+
+
+
+
+Input Type 2: Proper Questions
+
+User Input -> Preprocess Input -> Look Up in Processed Data -> Matches Found?
+                                                             |
+                                                             | Yes
+                                                             V
+                                                   Select Best Answer Using Voting
+                                                             |
+                                                             V
+                                                      Send Response -> Log Interaction
+                                                             |
+                                                             V
+                                                      No Matches Found
+                                                             |
+                                                             V
+                                                Proceed to Next Input Type
+
+
+
+Input Type 3: Subset Questions
+
+User Input -> Preprocess Input -> Check Subset in Processed Data -> Match Found?
+                                                             |
+                                                             | Yes
+                                                             V
+                                                   Retrieve Corresponding Answer
+                                                             |
+                                                             V
+                                                      Send Response -> Log Interaction
+                                                             |
+                                                             V
+                                                      No Matches Found
+                                                             |
+                                                             V
+                                                Proceed to Next Input Type
+
+
+
+Input Type 4: Common Questions
+
+User Input -> Extract Common Keyword -> Check Recent History in track_chat.csv -> Match Found?
+                                                             |
+                                                             | Yes
+                                                             V
+                                                   Retrieve Corresponding Answer
+                                                             |
+                                                             V
+                                                      Send Response -> Log Interaction
+                                                             |
+                                                             V
+                                                      No Matches Found
+                                                             |
+                                                             V
+                                                Proceed to Next Input Type
+
+
+
+
+
+Input Type 5: Exit Commands
+
+User Input -> Check for Exit Command -> Match Found -> Send Farewell Message -> Terminate Session
+                                                             |
+                                                             V
+                                                         No Match
+                                                             |
+                                                             V
+                                                Proceed to Next Input Type
+
+
+Input Type 6: Incorrect/Unclear Queries
+
+User Input -> Check Against All Input Types -> No Matches Found -> Send Clarification Request -> Log Interaction

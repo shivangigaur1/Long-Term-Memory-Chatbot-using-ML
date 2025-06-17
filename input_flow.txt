@@ -1,0 +1,86 @@
+Input Type 1: Predefined Responsess
+
+User Input -> Check PREDEFINED_RESPONSES -> Match Found -> Send Response -> Log Interaction
+                                                             |
+                                                             V
+                                                         No Match
+                                                             |
+                                                             V
+                                                Proceed to Next Input Type
+
+
+
+
+Input Type 2: Proper Questions
+
+User Input -> Preprocess Input -> Look Up in Processed Data -> Matches Found?
+                                                             |
+                                                             | Yes
+                                                             V
+                                                   Select Best Answer Using Voting
+                                                             |
+                                                             V
+                                                      Send Response -> Log Interaction
+                                                             |
+                                                             V
+                                                      No Matches Found
+                                                             |
+                                                             V
+                                                Proceed to Next Input Type
+
+
+
+Input Type 3: Subset Questions
+
+User Input -> Preprocess Input -> Check Subset in Processed Data -> Match Found?
+                                                             |
+                                                             | Yes
+                                                             V
+                                                   Retrieve Corresponding Answer
+                                                             |
+                                                             V
+                                                      Send Response -> Log Interaction
+                                                             |
+                                                             V
+                                                      No Matches Found
+                                                             |
+                                                             V
+                                                Proceed to Next Input Type
+
+
+
+Input Type 4: Common Questions
+
+User Input -> Extract Common Keyword -> Check Recent History in track_chat.csv -> Match Found?
+                                                             |
+                                                             | Yes
+                                                             V
+                                                   Retrieve Corresponding Answer
+                                                             |
+                                                             V
+                                                      Send Response -> Log Interaction
+                                                             |
+                                                             V
+                                                      No Matches Found
+                                                             |
+                                                             V
+                                                Proceed to Next Input Type
+
+
+
+
+
+Input Type 5: Exit Commands
+
+User Input -> Check for Exit Command -> Match Found -> Send Farewell Message -> Terminate Session
+                                                             |
+                                                             V
+                                                         No Match
+                                                             |
+                                                             V
+                                                Proceed to Next Input Type
+
+
+Input Type 6: Incorrect/Unclear Queries
+
+User Input -> Check Against All Input Types -> No Matches Found -> Send Clarification Request -> Log Interaction
